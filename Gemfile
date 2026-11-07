@@ -3,12 +3,12 @@ source "https://rubygems.org"
 gem 'faraday', '~> 2.0'
 gem "rake", "~> 13.0"
 gem "minima", "~> 2.5"
-gem "github-pages", "~> 227", group: :jekyll_plugins
+gem "github-pages", "~> 232", group: :jekyll_plugins
 gem 'jekyll-sitemap', "~> 1.4"
 gem "jekyll-category-pages", "~> 1.0"
 gem "jekyll-admin", "~> 0.11"
 gem "bundler"
-gem "jekyll", "~> 3.9.2"
+gem "jekyll", "~> 3.10.0"
 gem "listen", "~> 3.7"
 gem "rack", "~> 2.2.3"
 gem "webrick", "~> 1.7"

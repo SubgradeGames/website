@@ -1,0 +1,17 @@
+{% assign home = site.data.home %}
+
+<!-- Footer: contact desks, reply time, legal line -->
+<footer class="site-foot" id="contact">
+    <div class="wrap contacts">
+        {% for contact in home.contacts %}
+        <div>
+            <h3 class="mono">{{ contact.label }}</h3>
+            <p><a href="mailto:{{ contact.email }}">{{ contact.email }}</a></p>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="wrap legal">
+        <span>{{ home.reply_time }}</span>
+        <span>&copy; {{ home.founded }}-{{ site.time | date: "%Y" }} Aquinas Games · <a href="{{ '/sitemap.xml' | relative_url }}">Sitemap</a></span>
+    </div>
+</footer>

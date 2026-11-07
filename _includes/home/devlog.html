@@ -1,0 +1,22 @@
+{% assign home = site.data.home %}
+{% assign post = home.devlog | first %}
+
+<!-- Devlog: the newest entry from _data/home.yml -->
+{% if post %}
+<section class="wrap devlog" id="devlog" aria-labelledby="devlog-title">
+    <div class="section-head">
+        <h2 id="devlog-title">From the workshop</h2>
+        <span class="mono muted">Devlog</span>
+    </div>
+
+    <article class="log-card">
+        <img src="{{ post.image | relative_url }}" alt="{{ post.image_alt }}" width="960" height="540" loading="lazy">
+        <div class="log-body">
+            <span class="mono muted">{{ post.label }} · {{ post.date | date: "%B %-d, %Y" }}</span>
+            <h3>{{ post.title }}</h3>
+            <p>{{ post.summary }}</p>
+            <a class="btn btn-ghost" href="{{ post.url | relative_url }}">Read the devlog</a>
+        </div>
+    </article>
+</section>
+{% endif %}

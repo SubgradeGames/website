@@ -1,0 +1,63 @@
+{% assign home = site.data.home %}
+
+<!-- Catalogue: one feature card per game, then the empty slot that signs people up -->
+<section class="wrap catalogue" id="games" aria-labelledby="games-title">
+    <div class="section-head">
+        <h2 id="games-title">Catalogue</h2>
+        <span class="mono muted">{% if home.games.size == 1 %}One game so far{% else %}{{ home.games.size }} games{% endif %} · each has its own site</span>
+    </div>
+
+    {% for game in home.games %}
+    {% assign slug = game.code | downcase %}
+    {% assign clip = game.clips | first %}
+    <article class="feature">
+        <div class="feature-media">
+            <video class="feature-video" id="clip-{{ slug }}" src="{{ clip.video | relative_url }}" poster="{{ clip.poster | relative_url }}" aria-label="{{ clip.alt }}" autoplay muted loop playsinline preload="metadata"></video>
+
+            {% if game.clips.size > 1 %}
+            <p class="clip-caption mono" id="caption-{{ slug }}" aria-live="polite">Clip 1 of {{ game.clips.size }} · {{ clip.name }}</p>
+            <div class="clip-thumbs" data-player="clip-{{ slug }}" data-caption="caption-{{ slug }}">
+                {% for c in game.clips %}
+                <button class="clip-thumb" type="button" aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}" aria-label="Clip {{ forloop.index }}: {{ c.name }}" data-video="{{ c.video | relative_url }}" data-poster="{{ c.poster | relative_url }}" data-name="{{ c.name }}" data-alt="{{ c.alt }}">
+                    <img src="{{ c.thumb | relative_url }}" alt="" width="240" height="135" loading="lazy">
+                </button>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="feature-body">
+            <div class="slot-id"><span class="code">{{ game.code }}</span><span class="mono muted">{{ game.status }}</span></div>
+            <h3 class="feature-title">{{ game.name }}</h3>
+            <p>{{ game.pitch }}</p>
+
+            <div class="ticket lines">
+                {% for fact in game.facts %}
+                <div class="line"><span>{{ fact.label }}</span><span class="lead"></span><span class="val">{{ fact.value }}</span></div>
+                {% endfor %}
+                <div class="line total"><span>Total</span><span class="lead"></span><span class="val">{{ game.total }}</span></div>
+            </div>
+
+            <div class="btns">
+                <a class="btn" href="{{ game.store }}">Buy on Steam</a>
+                <a class="btn btn-ghost" href="{{ game.site | relative_url }}">Visit the game's site</a>
+            </div>
+        </div>
+    </article>
+    {% endfor %}
+
+    <form class="slot-empty" action="{{ home.mailing_list.action }}" method="post" target="_blank">
+        <span class="code">{{ home.next_slot.code }}</span>
+        <div>
+            <h3>{{ home.next_slot.title }}</h3>
+            <p>{{ home.next_slot.text }}</p>
+        </div>
+        <div class="field">
+            <label class="sr-only" for="signup-email">Email address</label>
+            <input id="signup-email" type="email" name="EMAIL" placeholder="you@example.com" autocomplete="email" required>
+            <button class="btn" type="submit">Notify me</button>
+        </div>
+        <!-- Mailchimp honeypot: real people never fill this in -->
+        <div class="honeypot" aria-hidden="true"><input type="text" name="{{ home.mailing_list.honeypot }}" tabindex="-1" value=""></div>
+    </form>
+</section>

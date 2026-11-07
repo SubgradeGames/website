@@ -1,7 +1,12 @@
 ---
 title: Aquinas Games
-layout: main
+layout: home
 ---
 
-{% include games.html %}
-{% include about.html %}
+{% include home/hero.html %}
+<main>
+    {% include home/catalogue.html %}
+    {% include home/devlog.html %}
+    {% include home/standards.html %}
+</main>
+{% include home/footer.html %}

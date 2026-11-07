@@ -1,0 +1,84 @@
+# Main page content. Markup lives in _includes/home/, behaviour in js/home*.js.
+# Each game gets one feature card in the catalogue and keeps its own website.
+
+tagline: "If it's not fun, why bother?"
+lede: "Dense, feature-rich video games, made in Canada and sold for money. Sometimes they're fun."
+
+# Lines the monk cycles through when clicked. The first one shows on load.
+quips:
+  - "Sometimes they're fun."
+  - "All video games are certified organic."
+  - "If you dislike money, consider buying our products."
+  - "Please tolerate the colour green."
+  - "If it's not fun, why bother?"
+
+games:
+  - code: A1
+    name: Twinstick Arcade
+    status: Available on Steam
+    pitch: Blast and dash your way out of an arcade machine.
+    site: /TwinstickArcade
+    store: https://store.steampowered.com/app/1488150/Twinstick_Arcade/
+    total: See Steam
+    facts:
+      - { label: Levels, value: "7" }
+      - { label: Combat encounters, value: Dozens }
+      - { label: Endless mode, value: Included }
+      - { label: Colours, value: Green }
+    # The first clip plays on load.
+    clips:
+      - name: Zooming out
+        video: /assets/home/twinstick-zoom.mp4
+        poster: /assets/home/twinstick-zoom.jpg
+        thumb: /assets/home/twinstick-zoom-thumb.jpg
+        alt: "Twinstick Arcade: holding right-click zooms the camera out over a maze of pixel trees."
+      - name: Getting started
+        video: /assets/home/twinstick-start.mp4
+        poster: /assets/home/twinstick-start.jpg
+        thumb: /assets/home/twinstick-start-thumb.jpg
+        alt: "Twinstick Arcade tutorial: move with WASD, dash with Space, pause with Esc."
+      - name: The Green Woods
+        video: /assets/home/twinstick-woods.mp4
+        poster: /assets/home/twinstick-woods.jpg
+        thumb: /assets/home/twinstick-woods-thumb.jpg
+        alt: "Twinstick Arcade: fighting enemies in The Green Woods."
+      - name: First shots
+        video: /assets/home/twinstick-shoot.mp4
+        poster: /assets/home/twinstick-shoot.jpg
+        thumb: /assets/home/twinstick-shoot-thumb.jpg
+        alt: "Twinstick Arcade tutorial: left-click to shoot."
+
+# The empty slot after the last game doubles as the mailing-list signup.
+next_slot:
+  code: A2
+  title: "Next game: not made yet"
+  text: "We'll email you when this slot is stocked. No spam."
+
+mailing_list:
+  action: https://aquinasgames.us2.list-manage.com/subscribe/post?u=c0bcb8f065abc8bea73a9bb06&id=f255b655b2
+  honeypot: b_c0bcb8f065abc8bea73a9bb06_f255b655b2
+
+# Newest first. Only the first entry is shown.
+devlog:
+  - label: Devlog 1
+    title: Level and Enemy Design
+    date: 2021-03-13
+    url: /TwinstickArcade/Devlog-1
+    summary: "How enemies stay readable on a palette of four greens, why random shading beats a single light source under a CRT shader, and why every level is a maze. No keycards."
+    image: /assets/home/devlog-1.jpg
+    image_alt: "Twinstick Arcade's Bomber's Village level, with an enemy rendered under the CRT scanlines."
+
+standards:
+  title: Our standards
+  text: "We make video games and sell them for money. Sometimes they're fun. If you like video games or dislike money, consider buying our products."
+  stamps:
+    - { top: Certified, name: Organic, bottom: Since 2020, tone: organic }
+    - { top: Certified, name: Fair-Trade, bottom: Aquinas, tone: fair }
+    - { top: Certified, name: Home-Grown, bottom: Canada, tone: home }
+
+contacts:
+  - { label: Press, email: press@aquinasgames.ca }
+  - { label: Support, email: support@aquinasgames.ca }
+  - { label: Everything else, email: contact@aquinasgames.ca }
+reply_time: We try to respond within 1-2 business days.
+founded: 2020

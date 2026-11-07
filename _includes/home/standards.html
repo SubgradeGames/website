@@ -1,0 +1,20 @@
+{% assign standards = site.data.home.standards %}
+
+<!-- Standards: the about copy beside the studio's three "certified" stamps -->
+<section class="standards" aria-labelledby="standards-title">
+    <div class="wrap standards-in">
+        <div>
+            <h2 id="standards-title">{{ standards.title }}</h2>
+            <p>{{ standards.text }}</p>
+        </div>
+        <div class="stamps">
+            {% for stamp in standards.stamps %}
+            <div class="stamp stamp-{{ stamp.tone }}">
+                <span class="mono">{{ stamp.top }}</span>
+                <span class="stamp-name">{{ stamp.name }}</span>
+                <span class="mono">{{ stamp.bottom }}</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>

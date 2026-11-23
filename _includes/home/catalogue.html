@@ -1,16 +1,18 @@
 {% assign home = site.data.home %}
 
-<!-- Catalogue: one feature card per game, then the empty slot that signs people up -->
+<!-- Catalogue: one feature card per game, then the empty slot that signs people up (when visible) -->
 <section class="wrap catalogue" id="games" aria-labelledby="games-title">
     <div class="section-head">
-        <h2 id="games-title">{{ home.catalogue.title }}</h2>
-        <span class="mono muted">{{ home.catalogue.note }}</span>
+        <div>
+            <h2 id="games-title">{{ home.catalogue.title }}</h2>
+            <p class="section-sub">{{ home.catalogue.subtitle }}</p>
+        </div>
     </div>
 
     {% for game in home.games %}
     {% assign slug = game.code | downcase %}
     {% assign clip = game.clips | first %}
-    <article class="feature">
+    <article class="feature feature-{{ game.theme }}">
         <div class="feature-media">
             <video class="feature-video" id="clip-{{ slug }}" src="{{ clip.video | relative_url }}" poster="{{ clip.poster | relative_url }}" aria-label="{{ clip.alt }}" autoplay muted loop playsinline preload="metadata"></video>
 
@@ -32,21 +34,16 @@
             <h3 class="feature-title">{{ game.name }}</h3>
             <p>{{ game.pitch }}</p>
 
-            <div class="ticket lines">
-                {% for fact in game.facts %}
-                <div class="line"><span>{{ fact.label }}</span><span class="lead"></span><span class="val">{{ fact.value }}</span></div>
-                {% endfor %}
-                <div class="line total"><span>{{ home.catalogue.total_label }}</span><span class="lead"></span><span class="val">{{ game.total }}</span></div>
-            </div>
-
-            <div class="btns">
-                <a class="btn" href="{{ game.store }}">{{ game.store_label }}</a>
-                <a class="btn btn-ghost" href="{{ game.site | relative_url }}">{{ game.site_label }}</a>
+            <!-- Store and site links split the card width; the site link wears the game's theme -->
+            <div class="btns-split">
+                <a class="btn btn-steam" href="{{ game.store }}">{% include home/steam-icon.svg %}{{ game.store_label }}</a>
+                <a class="btn btn-{{ game.theme }}" href="{{ game.site | relative_url }}">{{ game.site_label }}</a>
             </div>
         </div>
     </article>
     {% endfor %}
 
+    {% if home.next_slot.visible %}
     <form class="slot-empty" action="{{ home.mailing_list.action }}" method="post" target="_blank">
         <span class="code">{{ home.next_slot.code }}</span>
         <div>
@@ -61,4 +58,5 @@
         <!-- Mailchimp honeypot: real people never fill this in -->
         <div class="honeypot" aria-hidden="true"><input type="text" name="{{ home.mailing_list.honeypot }}" tabindex="-1" value=""></div>
     </form>
+    {% endif %}
 </section>

@@ -1,6 +1,6 @@
 {% assign home = site.data.home %}
 
-<!-- Footer: contact desks, reply time, legal line -->
+<!-- Footer: contact desks, studio line, legal line -->
 <footer class="site-foot" id="contact">
     <div class="wrap contacts">
         {% for contact in home.contacts %}
@@ -11,7 +11,7 @@
         {% endfor %}
     </div>
     <div class="wrap legal">
-        <span>{{ home.reply_time }}</span>
-        <span>&copy; {{ home.founded }}-{{ site.time | date: "%Y" }} {{ home.studio }} · <a href="{{ '/sitemap.xml' | relative_url }}">{{ home.sitemap_label }}</a></span>
+        <span>{{ home.made_by }}</span>
+        <span>&copy; {{ home.founded }}-{{ site.time | date: "%Y" }} {{ home.studio }} · <a href="{{ '/sitemap.xml' | relative_url }}">{{ home.sitemap_label }}</a> · <a href="{{ '/feed.xml' | relative_url }}">{{ home.rss_label }}</a></span>
     </div>
 </footer>

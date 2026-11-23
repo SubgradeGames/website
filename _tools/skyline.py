@@ -325,7 +325,7 @@ STREET_PALETTES = {
                            rgb('#0E1430'), rgb('#B8955A')),
 }
 
-STREET_H = 33
+STREET_H = 25
 
 
 def street_row(pal, y, x):
@@ -335,12 +335,12 @@ def street_row(pal, y, x):
         1-4    sidewalk (lit top row, slab seam every 8 px)
         5-6    curb (lit top, shaded face)
         7      gutter outline
-        8-16   bike lane, green paint
-        17     lane edge line
-        18-26  road lane
-        27-29  double yellow centre line (yellow, road, yellow)
-        30     road
-        31-32  road dithers into the page
+        8-12   bike lane, green paint
+        13     lane edge line
+        14-18  road lane
+        19-21  double yellow centre line (yellow, road, yellow)
+        22     road
+        23-24  road dithers into the page
     """
     if y in (0, 7):
         return pal.outline
@@ -352,15 +352,15 @@ def street_row(pal, y, x):
         return pal.curb_hi
     if y == 6:
         return pal.curb
-    if y <= 16:
+    if y <= 12:
         return pal.lane
-    if y == 17:
+    if y == 13:
         return pal.lane_line
-    if y in (27, 29):
+    if y in (19, 21):
         return pal.yellow
-    if y <= 30:
+    if y <= 22:
         return pal.road
-    if y == 31:
+    if y == 23:
         return pal.road if x % 2 == 0 else PAPER
     return pal.road if x % 4 == 1 else PAPER
 

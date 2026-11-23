@@ -5,37 +5,30 @@
 studio: Subgrade
 page_title: "Subgrade: Games For People"
 tagline: "Interactive experiences for passionate players."
-lede: "Feature rich video games for people like me! Check out our catalogue or read about the development process."
+lede: "Feature rich video games for people like me, Michael Bassili. Check out our catalogue or read about the development process."
 
 nav:
   games: Games
-  devlog: Devlog
+  devlog: Devlogs
   contact: Contact
-  buy_wide: Buy Twinstick Arcade
-  buy_narrow: Buy on Steam
 
 catalogue:
-  title: Catalogue
-  note: One game so far · each has its own site
-  total_label: Total
+  title: Our Games Catalogue
+  subtitle: "A list of every game Subgrade has released on Steam or elsewhere."
   # {index}, {count} and {name} are filled in per clip. Example: "Clip 2 of 4 · Getting started".
   clip_caption: "Clip {index} of {count} · {name}"
 
 games:
-  - code: A1
+  - code: GAME1
     name: Twinstick Arcade
     status: Available on Steam
-    pitch: Blast and dash your way out of an arcade machine.
+    pitch: "Blast and dash through in a gorgeous retro 2D world! Explore and fight your way out of the arcade machine. Endless mode throws wave after wave at you to see how long you can last. Play hard! Escape from the arcade machine! Speedrun through tight combat encounters. Improve your high-scores. And most of all: tolerate the colour green."
     site: /TwinstickArcade
     store: https://store.steampowered.com/app/1488150/Twinstick_Arcade/
-    total: See Steam
     store_label: Buy on Steam
-    site_label: "Visit the game's site"
-    facts:
-      - { label: Levels, value: "7" }
-      - { label: Combat encounters, value: Dozens }
-      - { label: Endless mode, value: Included }
-      - { label: Colours, value: Green }
+    site_label: Learn More
+    # Styles the site button. Matches a .btn-{theme} rule in css/home.css.
+    theme: twinstick
     # The first clip plays on load.
     clips:
       - name: Zooming out
@@ -61,6 +54,8 @@ games:
 
 # The empty slot after the last game doubles as the mailing-list signup.
 next_slot:
+  # Hidden for now. Set true to show the signup again.
+  visible: false
   code: A2
   title: "Next game: not made yet"
   text: "We'll email you when this slot is stocked. No spam."
@@ -74,33 +69,34 @@ mailing_list:
 
 devlog:
   title: From the workshop
-  note: Devlog
-  button: Read the devlog
-  # Newest first. Only the first entry is shown.
+  subtitle: A peek at the design and development work behind our games.
+  filter_label: Filter devlogs by game or tag
+  all_label: All
+  empty: No devlogs match this filter yet.
+  pager_label: Devlog pages
+  prev_label: Previous
+  next_label: Next
+  # {from}, {to} and {count} are filled in per page. Example: "7–12 of 30".
+  page_status: "{from}–{to} of {count}"
+  per_page: 5
+  # Any order; the page sorts by date, newest first. Each game and tag
+  # becomes a filter chip, so reuse existing tag names where they fit.
   posts:
     - label: Devlog 1
       title: Level and Enemy Design
       date: 2021-03-13
+      game: Twinstick Arcade
+      tags: [Level design, Enemy design, Art]
       url: /TwinstickArcade/Devlog-1
       summary: "How enemies stay readable on a palette of four greens, why random shading beats a single light source under a CRT shader, and why every level is a maze. No keycards."
       image: /assets/home/devlog-1.jpg
       image_alt: "Twinstick Arcade's Bomber's Village level, with an enemy rendered under the CRT scanlines."
 
-standards:
-  title: Our standards
-  text: "A small independent studio making video games we want to play. These are the promises we keep for every game we ship."
-  promises:
-    - name: Human-crafted
-      text: "Every sprite, song, sound and line of writing is made by people. No AI-generated art, music or writing."
-    - name: Made in Canada
-      text: "Designed and built by an independent studio in Canada since 2020."
-    - name: Pay once
-      text: "No microtransactions, no ads. Buy the game and it's yours."
-
 contacts:
   - { label: Press, email: press@subgrade.games }
   - { label: Support, email: support@subgrade.games }
-  - { label: Everything else, email: contact@subgrade.games }
-reply_time: We try to respond within 1-2 business days.
+  - { label: Everything else, email: hello@subgrade.games }
+made_by: All games made by passionate humans.
 founded: 2020
 sitemap_label: Sitemap
+rss_label: RSS

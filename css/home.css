@@ -4,8 +4,7 @@
  *   | hero       sky for the visitor's clock, nav, pitch, stack |
  *   +--------------------------------------------------------+
  *   | catalogue  one feature card per game, then empty slot    |
- *   | devlog     newest post                                   |
- *   | standards  about copy and the studio's promises          |
+ *   | devlog     filterable, paginated list of every entry     |
  *   | site-foot  contact desks and legal line                  |
  *   +--------------------------------------------------------+
  */
@@ -23,9 +22,20 @@
     --leader: #9AAEC0;
     --link: #005FB3;
     --sand: #E5B98C;
-    --ticket: #FFFDF7;
     --white: #FFFFFF;
     --night-foot: #26405A;
+    --blueprint: #123E7C;
+
+    /* Steam store navy and highlight blue. */
+    --steam-top: #2A475E;
+    --steam-bottom: #171A21;
+    --steam-blue: #66C0F4;
+
+    /* Twinstick Arcade's four greens (css/TwinstickArcade.css). */
+    --ta-dark: #0F380F;
+    --ta-mid: #306230;
+    --ta-edge: #5E881F;
+    --ta-lit: #8BAC0F;
 
     --font-body: 'Fira Sans', system-ui, sans-serif;
     --font-mono: 'Fira Mono', ui-monospace, monospace;
@@ -34,9 +44,9 @@
     --gutter: 40px;
 
     /* Skyline art pixel size (tiles from _tools/skyline.py). The city
-       stands on a 33 art pixel street strip along the hero's bottom edge. */
+       stands on a 25 art pixel street strip along the hero's bottom edge. */
     --city-art: 4px;
-    --street: calc(33 * var(--city-art));
+    --street: calc(25 * var(--city-art));
 }
 
 /* Time of day, set on <html> by js/home-sky.js. */
@@ -54,7 +64,6 @@ body.home { margin: 0; background: var(--paper); color: var(--ink); font: 400 17
 .mono { font: 500 13px/1.3 var(--font-mono); letter-spacing: .1em; text-transform: uppercase; }
 .muted { color: var(--muted); }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-.narrow-only { display: none; }
 
 /* Buttons */
 .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 20px; box-sizing: border-box; border: 0; background: var(--link); color: var(--white); font: 700 16px var(--font-body); text-decoration: none; white-space: nowrap; cursor: pointer; }
@@ -113,7 +122,6 @@ html[data-sky="night"] .hero-stars { opacity: 1; }
 .nav-links { display: flex; align-items: center; gap: 4px; }
 .home .nav-link { display: inline-flex; align-items: center; min-height: 44px; padding: 0 12px; color: var(--white); font-weight: 500; text-decoration: none; }
 .home .nav-link:hover { color: var(--white); text-decoration: underline; text-underline-offset: 4px; }
-.nav-links .btn { margin-left: 8px; }
 
 .hero-body { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 40px; padding-block: 36px 332px; }
 .pitch-title { margin: 0 0 18px; max-width: 14ch; font: 800 clamp(38px, 5.4vw, 66px)/1.04 var(--font-body); letter-spacing: -.02em; text-wrap: balance; }
@@ -133,6 +141,7 @@ html[data-sky="night"] .hero-stars { opacity: 1; }
 .catalogue { display: flex; flex-direction: column; gap: 20px; padding-block: 64px 80px; }
 .section-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 24px; margin-bottom: 8px; }
 .section-head h2 { margin: 0; font: 800 clamp(32px, 3.6vw, 44px)/1.05 var(--font-body); letter-spacing: -.02em; }
+.section-sub { margin: 8px 0 0; max-width: 60ch; color: var(--ink-soft); }
 
 .feature { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); background: var(--panel); border: 1px solid var(--rule); }
 .feature-media { display: flex; flex-direction: column; min-width: 0; background: var(--ink); }
@@ -144,19 +153,68 @@ html[data-sky="night"] .hero-stars { opacity: 1; }
 .clip-thumb:hover { opacity: 1; }
 .clip-thumb[aria-pressed="true"] { opacity: 1; box-shadow: 0 0 0 2px var(--sand); }
 
+/* Twinstick card: blueprint border. The edge lines overshoot every corner
+   by --tick, like construction lines on an architect's drawing.
+
+        |              |
+     ---+--------------+---
+        |              |
+        |     card     |
+        |              |
+     ---+--------------+---
+        |              |
+
+   ::before sits --tick outside the border box; eight gradients paint the
+   overshoots (two per corner) in line with the border.
+
+   The tips fade out in 2 px pixel dither, one --dither band per step,
+   counted inward from the tip: 25% fill, 50% checker, then solid.
+   The mask layers clip to border/padding/content box to make the bands. */
+.feature-twinstick { --tick: 16px; --line: 4px; --dither: 4px; position: relative; border: var(--line) solid var(--blueprint); }
+.feature-twinstick::before {
+    --ink-line: linear-gradient(var(--blueprint), var(--blueprint));
+    --solid: linear-gradient(#000, #000);
+    --checker: conic-gradient(#000 25%, transparent 0 50%, #000 0 75%, transparent 0);
+    --sparse: conic-gradient(#000 25%, transparent 0);
+    content: "";
+    position: absolute;
+    inset: calc(-1 * (var(--tick) + var(--line)));
+    box-sizing: border-box;
+    border: var(--dither) solid transparent;
+    padding: var(--dither);
+    pointer-events: none;
+    background:
+        var(--ink-line) left 0 top var(--tick) / var(--tick) var(--line),
+        var(--ink-line) right 0 top var(--tick) / var(--tick) var(--line),
+        var(--ink-line) left 0 bottom var(--tick) / var(--tick) var(--line),
+        var(--ink-line) right 0 bottom var(--tick) / var(--tick) var(--line),
+        var(--ink-line) left var(--tick) top 0 / var(--line) var(--tick),
+        var(--ink-line) right var(--tick) top 0 / var(--line) var(--tick),
+        var(--ink-line) left var(--tick) bottom 0 / var(--line) var(--tick),
+        var(--ink-line) right var(--tick) bottom 0 / var(--line) var(--tick);
+    background-repeat: no-repeat;
+    background-origin: border-box;
+    mask: var(--solid) content-box, var(--checker) 0 0 / 4px 4px padding-box, var(--sparse) 0 0 / 4px 4px border-box;
+    mask-origin: border-box;
+}
+
 .feature-body { display: flex; flex-direction: column; gap: 16px; min-width: 0; padding: 32px; }
 .feature-body p { margin: 0; color: var(--ink-soft); }
 .slot-id { display: flex; align-items: center; gap: 12px; }
 .feature-title { margin: 0; font: 800 30px/1.1 var(--font-body); letter-spacing: -.01em; }
 
-/* Receipt lines: label, dotted leader, value. */
-.lines { display: flex; flex-direction: column; gap: 6px; font: 400 15px/1.45 var(--font-mono); }
-.line { display: flex; align-items: baseline; gap: 8px; }
-.lead { flex: 1; min-width: 16px; border-bottom: 2px dotted var(--leader); transform: translateY(-4px); }
-.val { text-align: right; overflow-wrap: anywhere; }
-.line.total { margin-top: 4px; padding-top: 8px; border-top: 2px dashed var(--ink); font-weight: 500; }
-.ticket { position: relative; padding: 16px 18px 20px; background: var(--ticket); box-shadow: inset 0 0 0 1px #E6DFCC; }
-.ticket::after { content: ""; position: absolute; left: 0; right: 0; bottom: -10px; height: 10px; background: linear-gradient(135deg, var(--ticket) 50%, transparent 50%) 0 0 / 14px 10px repeat-x, linear-gradient(225deg, var(--ticket) 50%, transparent 50%) 0 0 / 14px 10px repeat-x; }
+/* Store and site buttons: equal halves, pinned to the card's bottom. */
+.btns-split { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: auto; }
+.btns-split .btn { gap: 10px; padding: 0 12px; transition: box-shadow 200ms ease; }
+.btn-icon { flex: none; }
+
+/* Steam: store navy with the Steam mark, blue glow on hover. */
+.home .btn-steam { background: linear-gradient(180deg, var(--steam-top), var(--steam-bottom)); color: var(--white); box-shadow: inset 0 0 0 1px rgba(102, 192, 244, .25); }
+.home .btn-steam:hover { background: linear-gradient(180deg, #386485, #1B2838); color: var(--white); box-shadow: inset 0 0 0 1px var(--steam-blue), 0 0 12px rgba(102, 192, 244, .45); }
+
+/* Twinstick Arcade: dark green, lit-green text, CRT scanlines and glow. */
+.home .btn-twinstick { background: repeating-linear-gradient(0deg, rgba(0, 0, 0, .18) 0 1px, transparent 1px 3px), var(--ta-dark); color: var(--ta-lit); text-shadow: 0 0 6px rgba(139, 172, 15, .6); box-shadow: inset 0 0 0 1px var(--ta-edge); }
+.home .btn-twinstick:hover { background: repeating-linear-gradient(0deg, rgba(0, 0, 0, .18) 0 1px, transparent 1px 3px), var(--ta-mid); color: #C4E33A; box-shadow: inset 0 0 0 1px var(--ta-lit), 0 0 12px rgba(139, 172, 15, .45); }
 
 /* Empty slot: the next game, and the mailing-list signup. */
 .slot-empty { display: grid; grid-template-columns: auto minmax(0, 1fr) minmax(0, 1.1fr); align-items: center; gap: 16px 28px; padding: 24px 32px; border: 2px dashed var(--leader); }
@@ -171,32 +229,48 @@ html[data-sky="night"] .hero-stars { opacity: 1; }
    Devlog
    ------------------------------------------------------------------ */
 .devlog { display: flex; flex-direction: column; gap: 20px; padding-block: 0 80px; }
-.log-card { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); background: var(--panel); border: 1px solid var(--rule); }
-.log-card img { display: block; width: 100%; height: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
-.log-body { display: flex; flex-direction: column; gap: 12px; min-width: 0; padding: 32px; }
-.log-body h3 { margin: 0; font: 800 28px/1.15 var(--font-body); letter-spacing: -.01em; }
-.log-body p { margin: 0; color: var(--ink-soft); }
-.log-body .btn { align-self: flex-start; margin-top: auto; }
+.devlog [hidden] { display: none; }
 
-/* ------------------------------------------------------------------
-   Standards: about copy beside the studio's promises.
-   ------------------------------------------------------------------ */
-.standards { background: var(--mist); }
-.standards-in { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); align-items: center; gap: 48px; padding-block: 64px; }
-.standards h2 { margin: 0 0 12px; font: 800 clamp(30px, 3.4vw, 40px)/1.05 var(--font-body); letter-spacing: -.02em; }
-.standards p { margin: 0; max-width: 44ch; color: var(--ink-soft); }
-.promises { display: grid; gap: 24px; margin: 0; padding: 0; list-style: none; }
-.promise { padding-left: 20px; border-left: 4px solid var(--link); }
-.promise-name { margin: 0 0 4px; font: 700 18px/1.2 var(--font-body); color: var(--ink); }
-.standards .promise p { max-width: 52ch; }
+/* Filter chips: one game or tag at a time; "All" clears. */
+.tag-filter { display: flex; flex-wrap: wrap; gap: 8px; }
+.tag-chip { min-height: 36px; padding: 0 14px; border: 1px solid var(--rule); background: var(--panel); color: var(--ink-soft); font: 500 15px var(--font-body); cursor: pointer; }
+.tag-chip:hover { border-color: var(--link); color: var(--link); }
+.tag-chip[aria-pressed="true"] { border-color: var(--link); background: var(--link); color: var(--white); }
+
+/* Entry list: thumbnail, meta line, title, summary, tags. One rule between rows. */
+.log-list { margin: 0; padding: 0; list-style: none; background: var(--panel); border: 1px solid var(--rule); }
+.log-row:not([hidden]) ~ .log-row:not([hidden]) { border-top: 1px solid var(--rule); }
+.home .log-link { display: grid; grid-template-columns: 192px minmax(0, 1fr); align-items: start; gap: 24px; padding: 20px 24px; color: var(--ink); text-decoration: none; }
+.home .log-link:hover { background: var(--mist); color: var(--ink); }
+.log-link img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; }
+.log-text { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.log-text h3 { margin: 0; font: 800 22px/1.2 var(--font-body); letter-spacing: -.01em; }
+.log-link:hover h3 { color: var(--link); }
+.log-text p { margin: 0; color: var(--ink-soft); }
+.log-tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 0; padding: 0; list-style: none; }
+.log-tags li { padding: 2px 8px; background: var(--mist); color: var(--muted); font: 500 12px/1.4 var(--font-mono); letter-spacing: .06em; text-transform: uppercase; }
+.log-empty { margin: 0; }
+
+/* Pager: previous, page numbers, next, then "7–12 of 30". */
+.pager { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.pager-pages { display: flex; flex-wrap: wrap; gap: 4px; margin: 0; padding: 0; list-style: none; }
+.pager button { min-width: 40px; min-height: 40px; padding: 0 12px; border: 1px solid var(--rule); background: var(--panel); color: var(--link); font: 500 15px var(--font-body); cursor: pointer; }
+.pager button:hover:not(:disabled) { border-color: var(--link); }
+.pager button:disabled { color: var(--leader); cursor: default; }
+.pager button[aria-current="page"] { border-color: var(--link); background: var(--link); color: var(--white); }
+.pager-status { margin-left: auto; }
 
 /* ------------------------------------------------------------------
    Footer
    ------------------------------------------------------------------ */
 .site-foot { background: var(--ink); color: #D6E6F3; font-size: 15px; }
+
+/* Strata: sprite border between page and footer, the ground under the
+   hero's street (_tools/strata.py). Dithers out of the page, into the ink. */
+.site-foot::before { content: ''; display: block; height: calc(24 * var(--city-art)); background: var(--paper) url('../assets/home/strata.png') repeat-x; background-size: calc(32 * var(--city-art)) 100%; image-rendering: pixelated; }
 .home .site-foot a { color: var(--white); }
 .home .site-foot a:hover { color: var(--sand); }
-.contacts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px 40px; padding-block: 48px 24px; }
+.contacts { display: flex; justify-content: space-between; gap: 24px 40px; padding-block: 48px 24px; }
 .contacts h3 { margin: 0 0 4px; color: var(--leader); }
 .contacts p { margin: 0; overflow-wrap: anywhere; }
 .legal { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; padding-block: 20px 28px; border-top: 1px solid var(--night-foot); color: var(--leader); }
@@ -209,9 +283,6 @@ html[data-sky="night"] .hero-stars { opacity: 1; }
 
     .home .wordmark { font-size: 18px; }
     .home .nav-link { display: none; }
-    .nav-links .btn { min-height: 44px; margin-left: 0; padding: 0 14px; font-size: 15px; }
-    .wide-only { display: none; }
-    .narrow-only { display: inline; }
 
     .hero-body { grid-template-columns: minmax(0, 1fr); gap: 20px; padding-block: 8px 249px; }
     .stack-spot { order: -1; justify-self: start; margin: 0; }
@@ -225,12 +296,12 @@ html[data-sky="night"] .hero-stars { opacity: 1; }
     .slot-empty { grid-template-columns: minmax(0, 1fr); padding: 20px; }
 
     .devlog { padding-block: 0 56px; }
-    .log-card { grid-template-columns: minmax(0, 1fr); }
-    .log-body { padding: 20px; }
+    .home .log-link { grid-template-columns: 96px minmax(0, 1fr); gap: 14px; padding: 16px; }
+    .log-text h3 { font-size: 19px; }
+    .log-text p { font-size: 15px; }
+    .pager-status { flex-basis: 100%; margin-left: 0; }
 
-    .standards-in { grid-template-columns: minmax(0, 1fr); gap: 28px; padding-block: 48px; }
-
-    .contacts { grid-template-columns: minmax(0, 1fr); }
+    .contacts { flex-direction: column; }
 }
 
 @media (prefers-reduced-motion: reduce) {

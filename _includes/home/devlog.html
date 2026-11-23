@@ -1,22 +1,55 @@
 {% assign devlog = site.data.home.devlog %}
-{% assign post = devlog.posts | first %}
+{% assign posts = devlog.posts | sort: "date" | reverse %}
 
-<!-- Devlog: the newest entry from _data/home.yml -->
-{% if post %}
+<!-- Filter chips: every game, then every tag, deduplicated. Example: Twinstick Arcade, Art, Level design. -->
+{% assign games = devlog.posts | map: "game" | uniq | sort %}
+{% assign tags = devlog.posts | map: "tags" | join: "|" | split: "|" | uniq | sort %}
+{% assign filters = games | concat: tags %}
+
+<!-- Devlog: every entry from _data/home.yml, newest first. js/home.js filters and paginates; without it the full list shows. -->
+{% if posts.size > 0 %}
 <section class="wrap devlog" id="devlog" aria-labelledby="devlog-title">
     <div class="section-head">
-        <h2 id="devlog-title">{{ devlog.title }}</h2>
-        <span class="mono muted">{{ devlog.note }}</span>
+        <div>
+            <h2 id="devlog-title">{{ devlog.title }}</h2>
+            <p class="section-sub">{{ devlog.subtitle }}</p>
+        </div>
     </div>
 
-    <article class="log-card">
-        <img src="{{ post.image | relative_url }}" alt="{{ post.image_alt }}" width="960" height="540" loading="lazy">
-        <div class="log-body">
-            <span class="mono muted">{{ post.label }} · {{ post.date | date: "%B %-d, %Y" }}</span>
-            <h3>{{ post.title }}</h3>
-            <p>{{ post.summary }}</p>
-            <a class="btn btn-ghost" href="{{ post.url | relative_url }}">{{ devlog.button }}</a>
-        </div>
-    </article>
+    <div class="tag-filter" role="group" aria-label="{{ devlog.filter_label }}" hidden>
+        <button class="tag-chip" type="button" data-tag="all" aria-pressed="true">{{ devlog.all_label }}</button>
+        {% for filter in filters %}
+        <button class="tag-chip" type="button" data-tag="{{ filter | slugify }}" aria-pressed="false">{{ filter }}</button>
+        {% endfor %}
+    </div>
+
+    <ol class="log-list" id="devlog-list" data-per-page="{{ devlog.per_page }}">
+        {% for post in posts %}
+        <li class="log-row" data-tags="{% for t in post.tags %}{{ t | slugify }} {% endfor %}{{ post.game | slugify }}">
+            <a class="log-link" href="{{ post.url | relative_url }}">
+                <img src="{{ post.image | relative_url }}" alt="{{ post.image_alt }}" width="192" height="108" loading="lazy">
+                <div class="log-text">
+                    <span class="mono muted">{{ post.label }} · {{ post.game }} · <time datetime="{{ post.date | date: '%Y-%m-%d' }}">{{ post.date | date: "%B %-d, %Y" }}</time></span>
+                    <h3>{{ post.title }}</h3>
+                    <p>{{ post.summary }}</p>
+                    <ul class="log-tags" aria-label="Tags">
+                        {% for t in post.tags %}
+                        <li>{{ t }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </a>
+        </li>
+        {% endfor %}
+    </ol>
+
+    <p class="log-empty muted" id="devlog-empty" hidden>{{ devlog.empty }}</p>
+
+    <nav class="pager" id="devlog-pager" aria-label="{{ devlog.pager_label }}" data-template="{{ devlog.page_status }}" hidden>
+        <button class="pager-step" type="button" data-step="-1">{{ devlog.prev_label }}</button>
+        <ol class="pager-pages"></ol>
+        <button class="pager-step" type="button" data-step="1">{{ devlog.next_label }}</button>
+        <span class="pager-status mono muted" aria-live="polite"></span>
+    </nav>
 </section>
 {% endif %}

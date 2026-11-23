@@ -1,42 +1,44 @@
 {% assign home = site.data.home %}
 {% assign lead_game = home.games | first %}
 
-<!-- Hero: layered sky (time of day set by js/home-sky.js), nav, pitch, talking monk -->
+<!-- Hero: layered sky (time of day set by js/home-sky.js), nav, pitch, logo stack -->
 <header class="hero" id="hero">
     <div class="hero-stars" aria-hidden="true"></div>
     <div class="band band-1" aria-hidden="true"></div>
-    <img class="far-isle far-isle-1" src="{{ '/assets/home/rock.png' | relative_url }}" alt="">
-    <img class="far-isle far-isle-2" src="{{ '/assets/home/rock.png' | relative_url }}" alt="">
-    <img class="far-isle far-isle-3" src="{{ '/assets/home/rock.png' | relative_url }}" alt="">
+    <div class="band cloud cloud-1" aria-hidden="true"></div>
     <div class="band band-2" aria-hidden="true"></div>
+    <div class="band cloud cloud-2" aria-hidden="true"></div>
     <div class="band band-3" aria-hidden="true"></div>
+    <div class="street" aria-hidden="true"></div>
 
     <nav class="wrap nav" aria-label="Main">
-        <a class="wordmark" href="{{ '/' | relative_url }}">Aquinas Games</a>
+        <a class="wordmark" href="{{ '/' | relative_url }}">
+            {{ home.studio }}
+        </a>
         <div class="nav-links">
-            <a class="nav-link" href="#games">Games</a>
-            <a class="nav-link" href="#devlog">Devlog</a>
-            <a class="nav-link" href="#contact">Contact</a>
+            <a class="nav-link" href="#games">{{ home.nav.games }}</a>
+            <a class="nav-link" href="#devlog">{{ home.nav.devlog }}</a>
+            <a class="nav-link" href="#contact">{{ home.nav.contact }}</a>
             <a class="btn btn-light" href="{{ lead_game.store }}">
-                <span class="wide-only">Buy {{ lead_game.name }}</span>
-                <span class="narrow-only">Buy on Steam</span>
+                <span class="wide-only">{{ home.nav.buy_wide }}</span>
+                <span class="narrow-only">{{ home.nav.buy_narrow }}</span>
             </a>
         </div>
     </nav>
 
     <div class="wrap hero-body">
         <div class="pitch">
-            <h1 class="pitch-title"><span class="sr-only">Aquinas Games: </span>{{ home.tagline }}</h1>
+            <h1 class="pitch-title"><span class="sr-only">{{ home.studio }}: </span>{{ home.tagline }}</h1>
             <p class="pitch-lede">{{ home.lede }}</p>
-            <p class="sky-chip mono" id="sky-chip" hidden></p>
         </div>
 
-        <div class="monk-spot">
-            <p class="monk-says" id="monk-says" aria-live="polite">{{ home.quips | first }}</p>
-            <button class="monk-btn" id="monk" type="button" aria-label="Talk to the monk">
-                <img class="monk" src="{{ '/assets/home/monk.png' | relative_url }}" alt="" width="39" height="46">
-            </button>
-            <script type="application/json" id="monk-quips">{{ home.quips | jsonify }}</script>
+        <div class="stack-spot">
+            <!-- Logo cut into slabs along its isometric seams; slab 0 (the lid) paints last, over the rest -->
+            <div class="stack" aria-hidden="true">
+                {% for i in (0..4) reversed %}
+                <img class="slab" style="--drop: {{ 4 | minus: i }}" src="{{ '/assets/home/slab-' | append: i | append: '.png' | relative_url }}" alt="">
+                {% endfor %}
+            </div>
         </div>
     </div>
 </header>

@@ -1,11 +1,10 @@
-// Main page behaviour: hero parallax, talking monk, clip gallery.
+// Main page behaviour: hero parallax, clip gallery.
 // The page works without this file; each feature only adds to it.
 (function () {
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
     const MOUSE = 'mouse';
 
     initTilt();
-    initMonk();
     initClips();
 
     // Parallax: pointer position becomes --px/--py (-1..1); CSS scales it per layer.
@@ -48,24 +47,6 @@
         hero.style.setProperty('--py', y.toFixed(3));
     }
 
-    // Talking monk: each click moves to the next line from _data/home.yml.
-    function initMonk() {
-        const monk = document.getElementById('monk');
-        const says = document.getElementById('monk-says');
-        const data = document.getElementById('monk-quips');
-        if (!monk || !says || !data) {
-            return;
-        }
-
-        const quips = JSON.parse(data.textContent);
-        let index = 0;
-
-        monk.addEventListener('click', () => {
-            index = (index + 1) % quips.length;
-            says.textContent = quips[index];
-        });
-    }
-
     // Clip gallery: thumbnails swap the feature video. Reduced motion: no autoplay, show controls.
     function initClips() {
         document.querySelectorAll('[data-player]').forEach(initStrip);
@@ -101,7 +82,11 @@
                     return;
                 }
 
-                caption.textContent = 'Clip ' + (index + 1) + ' of ' + thumbs.length + ' · ' + thumb.dataset.name;
+                // Template from _data/home.yml. Example: "Clip {index} of {count} · {name}" -> "Clip 2 of 4 · Getting started".
+                caption.textContent = strip.dataset.template
+                    .replace('{index}', index + 1)
+                    .replace('{count}', thumbs.length)
+                    .replace('{name}', thumb.dataset.name);
             });
         });
     }

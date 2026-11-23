@@ -1,16 +1,25 @@
-# Main page content. Markup lives in _includes/home/, behaviour in js/home*.js.
+# Main page content. Every word shown on the page lives in this file.
+# Markup lives in _includes/home/, behaviour in js/home*.js.
 # Each game gets one feature card in the catalogue and keeps its own website.
 
-tagline: "If it's not fun, why bother?"
-lede: "Dense, feature-rich video games, made in Canada and sold for money. Sometimes they're fun."
+studio: Subgrade
+page_title: "Subgrade: Games For People"
+tagline: "Interactive experiences for passionate players."
+lede: "Feature rich video games for people like me! Check out our catalogue or read about the development process."
 
-# Lines the monk cycles through when clicked. The first one shows on load.
-quips:
-  - "Sometimes they're fun."
-  - "All video games are certified organic."
-  - "If you dislike money, consider buying our products."
-  - "Please tolerate the colour green."
-  - "If it's not fun, why bother?"
+nav:
+  games: Games
+  devlog: Devlog
+  contact: Contact
+  buy_wide: Buy Twinstick Arcade
+  buy_narrow: Buy on Steam
+
+catalogue:
+  title: Catalogue
+  note: One game so far · each has its own site
+  total_label: Total
+  # {index}, {count} and {name} are filled in per clip. Example: "Clip 2 of 4 · Getting started".
+  clip_caption: "Clip {index} of {count} · {name}"
 
 games:
   - code: A1
@@ -20,6 +29,8 @@ games:
     site: /TwinstickArcade
     store: https://store.steampowered.com/app/1488150/Twinstick_Arcade/
     total: See Steam
+    store_label: Buy on Steam
+    site_label: "Visit the game's site"
     facts:
       - { label: Levels, value: "7" }
       - { label: Combat encounters, value: Dozens }
@@ -53,32 +64,43 @@ next_slot:
   code: A2
   title: "Next game: not made yet"
   text: "We'll email you when this slot is stocked. No spam."
+  email_label: Email address
+  email_placeholder: you@example.com
+  button: Notify me
 
 mailing_list:
   action: https://aquinasgames.us2.list-manage.com/subscribe/post?u=c0bcb8f065abc8bea73a9bb06&id=f255b655b2
   honeypot: b_c0bcb8f065abc8bea73a9bb06_f255b655b2
 
-# Newest first. Only the first entry is shown.
 devlog:
-  - label: Devlog 1
-    title: Level and Enemy Design
-    date: 2021-03-13
-    url: /TwinstickArcade/Devlog-1
-    summary: "How enemies stay readable on a palette of four greens, why random shading beats a single light source under a CRT shader, and why every level is a maze. No keycards."
-    image: /assets/home/devlog-1.jpg
-    image_alt: "Twinstick Arcade's Bomber's Village level, with an enemy rendered under the CRT scanlines."
+  title: From the workshop
+  note: Devlog
+  button: Read the devlog
+  # Newest first. Only the first entry is shown.
+  posts:
+    - label: Devlog 1
+      title: Level and Enemy Design
+      date: 2021-03-13
+      url: /TwinstickArcade/Devlog-1
+      summary: "How enemies stay readable on a palette of four greens, why random shading beats a single light source under a CRT shader, and why every level is a maze. No keycards."
+      image: /assets/home/devlog-1.jpg
+      image_alt: "Twinstick Arcade's Bomber's Village level, with an enemy rendered under the CRT scanlines."
 
 standards:
   title: Our standards
-  text: "We make video games and sell them for money. Sometimes they're fun. If you like video games or dislike money, consider buying our products."
-  stamps:
-    - { top: Certified, name: Organic, bottom: Since 2020, tone: organic }
-    - { top: Certified, name: Fair-Trade, bottom: Aquinas, tone: fair }
-    - { top: Certified, name: Home-Grown, bottom: Canada, tone: home }
+  text: "A small independent studio making video games we want to play. These are the promises we keep for every game we ship."
+  promises:
+    - name: Human-crafted
+      text: "Every sprite, song, sound and line of writing is made by people. No AI-generated art, music or writing."
+    - name: Made in Canada
+      text: "Designed and built by an independent studio in Canada since 2020."
+    - name: Pay once
+      text: "No microtransactions, no ads. Buy the game and it's yours."
 
 contacts:
-  - { label: Press, email: press@aquinasgames.ca }
-  - { label: Support, email: support@aquinasgames.ca }
-  - { label: Everything else, email: contact@aquinasgames.ca }
+  - { label: Press, email: press@subgrade.games }
+  - { label: Support, email: support@subgrade.games }
+  - { label: Everything else, email: contact@subgrade.games }
 reply_time: We try to respond within 1-2 business days.
 founded: 2020
+sitemap_label: Sitemap

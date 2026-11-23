@@ -3,10 +3,10 @@ exclude: ["README.md", vendor]
 username: AquinasGames
 repo: AquinasGames.github.io
 branch: master
-title: Aquinas Games Test
-author: Aquinas Games
-url: https://aquinasgames.ca
-keywords: "Aquinas Games, aquinas, games, canada games, aquinas games, indie games aquinas, aq games"
+title: Subgrade
+author: Subgrade
+url: https://subgrade.games
+keywords: "Subgrade, subgrade games, games, canada games, indie games, indie games canada"
 description: "Canadian video game company, focused on creating dense, feature-rich gaming experiences. If it's not fun, why bother."
 source: .
 destination: _site

@@ -12,6 +12,6 @@
     </div>
     <div class="wrap legal">
         <span>{{ home.reply_time }}</span>
-        <span>&copy; {{ home.founded }}-{{ site.time | date: "%Y" }} Aquinas Games · <a href="{{ '/sitemap.xml' | relative_url }}">Sitemap</a></span>
+        <span>&copy; {{ home.founded }}-{{ site.time | date: "%Y" }} {{ home.studio }} · <a href="{{ '/sitemap.xml' | relative_url }}">{{ home.sitemap_label }}</a></span>
     </div>
 </footer>

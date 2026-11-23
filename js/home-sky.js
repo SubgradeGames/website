@@ -27,25 +27,15 @@
         return Object.values(Sky).includes(value) ? value : null;
     }
 
-    // Set the sky on <html>, then caption it once the chip exists.
+    // Set the sky on <html>.
     function paint() {
         const now = new Date();
         const forced = preview();
         const sky = forced || skyAt(now.getHours());
 
         document.documentElement.dataset.sky = sky;
-
-        const chip = document.getElementById('sky-chip');
-        if (!chip) {
-            return;
-        }
-
-        const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        chip.textContent = forced ? 'Sky preview · ' + sky : 'Sky follows your clock · ' + sky + ', ' + time;
-        chip.hidden = false;
     }
 
     paint();
-    document.addEventListener('DOMContentLoaded', paint);
     setInterval(paint, TICK_MS);
 })();

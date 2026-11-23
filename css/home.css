@@ -1,21 +1,14 @@
 /* Main page styles. Only the home layout loads this file.
  *
  *   +--------------------------------------------------------+
- *   | hero       sky for the visitor's clock, nav, pitch, monk |
+ *   | hero       sky for the visitor's clock, nav, pitch, stack |
  *   +--------------------------------------------------------+
  *   | catalogue  one feature card per game, then empty slot    |
  *   | devlog     newest post                                   |
- *   | standards  about copy and three "certified" stamps       |
+ *   | standards  about copy and the studio's promises          |
  *   | site-foot  contact desks and legal line                  |
  *   +--------------------------------------------------------+
  */
-
-@font-face {
-    font-family: 'Pixel';
-    src: url('../assets/8-bit-webfont.woff2') format('woff2'),
-         url('../assets/8-bit-webfont.woff') format('woff');
-    font-display: swap;
-}
 
 :root {
     /* Palette: the logo's sky blue and sand, plus a blue-biased ink. */
@@ -32,18 +25,18 @@
     --sand: #E5B98C;
     --ticket: #FFFDF7;
     --white: #FFFFFF;
-    --veil: rgba(8, 22, 40, .55);
     --night-foot: #26405A;
 
     --font-body: 'Fira Sans', system-ui, sans-serif;
     --font-mono: 'Fira Mono', ui-monospace, monospace;
-    --font-pixel: 'Pixel', 'Fira Mono', monospace;
 
     --page: 1160px;
     --gutter: 40px;
 
-    /* Sky tiles are 64 art pixels drawn at 8x; the dither edge sits 200px into each tile. */
-    --tile: 512px;
+    /* Skyline art pixel size (tiles from _tools/skyline.py). The city
+       stands on a 33 art pixel street strip along the hero's bottom edge. */
+    --city-art: 4px;
+    --street: calc(33 * var(--city-art));
 }
 
 /* Time of day, set on <html> by js/home-sky.js. */
@@ -81,50 +74,58 @@ body.home { margin: 0; background: var(--paper); color: var(--ink); font: 400 17
 /* --px/--py run from -1 to 1 with the pointer (js/home.js); nearer layers travel further. */
 .hero { --px: 0; --py: 0; position: relative; overflow: hidden; background: var(--sky); color: var(--white); }
 
-.band { position: absolute; left: -32px; right: -32px; height: var(--tile); background-repeat: repeat-x; background-size: var(--tile) var(--tile); image-rendering: pixelated; pointer-events: none; animation: drift linear infinite; transition: transform 350ms ease-out; }
+/* Skyline: far, mid, near. Each tile is --w x --h art pixels; the bottom 4 rows
+   are ground, tucked behind the street so pointer parallax never shows a gap. */
+.band { position: absolute; left: -32px; right: -32px; bottom: calc(var(--street) - 4 * var(--city-art)); height: calc(var(--h) * var(--city-art)); background-repeat: repeat-x; background-size: calc(var(--w) * var(--city-art)) 100%; image-rendering: pixelated; pointer-events: none; transition: transform 350ms ease-out; }
 
-/* Bands are pinned to the bottom edge so text never sits on the dither. */
-.band-1 { bottom: -192px; animation-duration: 160s; background-image: url('../assets/home/sky-day-1.png'); transform: translate3d(calc(var(--px) * -6px), calc(var(--py) * -3px), 0); }
-.band-2 { bottom: -240px; animation-duration: 100s; animation-direction: reverse; background-image: url('../assets/home/sky-day-2.png'); transform: translate3d(calc(var(--px) * -11px), calc(var(--py) * -5px), 0); }
-.band-3 { bottom: -276px; animation-duration: 64s; background-image: url('../assets/home/sky-day-3.png'); transform: translate3d(calc(var(--px) * -17px), calc(var(--py) * -8px), 0); }
-html[data-sky="dusk"] .band-1 { background-image: url('../assets/home/sky-dusk-1.png'); }
-html[data-sky="dusk"] .band-2 { background-image: url('../assets/home/sky-dusk-2.png'); }
-html[data-sky="dusk"] .band-3 { background-image: url('../assets/home/sky-dusk-3.png'); }
-html[data-sky="night"] .band-1 { background-image: url('../assets/home/sky-night-1.png'); }
-html[data-sky="night"] .band-2 { background-image: url('../assets/home/sky-night-2.png'); }
-html[data-sky="night"] .band-3 { background-image: url('../assets/home/sky-night-3.png'); }
-@keyframes drift { to { background-position-x: var(--tile); } }
+.band-1 { --w: 160; --h: 52; background-image: url('../assets/home/city-day-1.png'); transform: translate3d(calc(var(--px) * -6px), calc(var(--py) * -3px), 0); }
+.band-2 { --w: 192; --h: 38; background-image: url('../assets/home/city-day-2.png'); transform: translate3d(calc(var(--px) * -11px), calc(var(--py) * -5px), 0); }
+.band-3 { --w: 224; --h: 24; background-image: url('../assets/home/city-day-3.png'); transform: translate3d(calc(var(--px) * -4px), calc(var(--py) * -1px), 0); }
+html[data-sky="dusk"] .band-1 { background-image: url('../assets/home/city-dusk-1.png'); }
+html[data-sky="dusk"] .band-2 { background-image: url('../assets/home/city-dusk-2.png'); }
+html[data-sky="dusk"] .band-3 { background-image: url('../assets/home/city-dusk-3.png'); }
+html[data-sky="night"] .band-1 { background-image: url('../assets/home/city-night-1.png'); }
+html[data-sky="night"] .band-2 { background-image: url('../assets/home/city-night-2.png'); }
+html[data-sky="night"] .band-3 { background-image: url('../assets/home/city-night-3.png'); }
+
+/* Translucent clouds between the city layers. No ground rows: --lift is the
+   cloud base in art pixels above the street. Parallax sits between neighbours. */
+.cloud { bottom: calc(var(--street) + var(--lift) * var(--city-art)); }
+.cloud-1 { --w: 256; --h: 24; --lift: 22; background-image: url('../assets/home/cloud-day-1.png'); transform: translate3d(calc(var(--px) * -8px), calc(var(--py) * -4px), 0); }
+.cloud-2 { --w: 288; --h: 18; --lift: 10; background-image: url('../assets/home/cloud-day-2.png'); transform: translate3d(calc(var(--px) * -14px), calc(var(--py) * -6px), 0); }
+html[data-sky="dusk"] .cloud-1 { background-image: url('../assets/home/cloud-dusk-1.png'); }
+html[data-sky="dusk"] .cloud-2 { background-image: url('../assets/home/cloud-dusk-2.png'); }
+html[data-sky="night"] .cloud-1 { background-image: url('../assets/home/cloud-night-1.png'); }
+html[data-sky="night"] .cloud-2 { background-image: url('../assets/home/cloud-night-2.png'); }
+
+/* Street: sprite border between hero and page. Fixed, no parallax; its last
+   rows dither into the page colour. */
+.street { position: absolute; left: 0; right: 0; bottom: 0; height: var(--street); background: url('../assets/home/street-day.png') repeat-x; background-size: calc(32 * var(--city-art)) 100%; image-rendering: pixelated; pointer-events: none; }
+html[data-sky="dusk"] .street { background-image: url('../assets/home/street-dusk.png'); }
+html[data-sky="night"] .street { background-image: url('../assets/home/street-night.png'); }
 
 .hero-stars { position: absolute; inset: -24px; background: url('../assets/home/stars.png') repeat; background-size: 384px 256px; image-rendering: pixelated; opacity: 0; pointer-events: none; transition: transform 350ms ease-out; transform: translate3d(calc(var(--px) * -3px), calc(var(--py) * -2px), 0); }
 html[data-sky="dusk"] .hero-stars { opacity: .35; }
 html[data-sky="night"] .hero-stars { opacity: 1; }
 
-/* Distant islands: faded for atmospheric depth. */
-.far-isle { position: absolute; image-rendering: pixelated; opacity: .3; pointer-events: none; transition: transform 350ms ease-out; transform: translate3d(calc(var(--px) * -8px), calc(var(--py) * -4px), 0); }
-.far-isle-1 { left: 44%; top: 80px; width: 144px; }
-.far-isle-2 { left: 6%; top: 330px; width: 108px; }
-.far-isle-3 { left: 86%; top: 34px; width: 96px; }
-html[data-sky="night"] .far-isle { opacity: .18; }
-
 .nav { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 22px; }
-.home .wordmark { font: 400 24px/1 var(--font-pixel); color: var(--white); text-decoration: none; white-space: nowrap; }
+.home .wordmark { display: inline-flex; align-items: center; font: 600 26px/1 var(--font-body); color: var(--white); text-decoration: none; white-space: nowrap; }
 .nav-links { display: flex; align-items: center; gap: 4px; }
 .home .nav-link { display: inline-flex; align-items: center; min-height: 44px; padding: 0 12px; color: var(--white); font-weight: 500; text-decoration: none; }
 .home .nav-link:hover { color: var(--white); text-decoration: underline; text-underline-offset: 4px; }
 .nav-links .btn { margin-left: 8px; }
 
-.hero-body { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 40px; padding-block: 36px 150px; }
-.pitch-title { margin: 0 0 18px; max-width: 14ch; font: 400 clamp(38px, 5.4vw, 66px)/1.04 var(--font-pixel); text-wrap: balance; }
+.hero-body { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 40px; padding-block: 36px 332px; }
+.pitch-title { margin: 0 0 18px; max-width: 14ch; font: 800 clamp(38px, 5.4vw, 66px)/1.04 var(--font-body); letter-spacing: -.02em; text-wrap: balance; }
 .pitch-lede { margin: 0; max-width: 36ch; font-size: 22px; line-height: 1.4; font-weight: 500; }
-.sky-chip { display: inline-block; margin: 18px 0 0; padding: 6px 10px; background: var(--veil); }
 
-/* Talking monk */
-.monk-spot { position: relative; margin-right: 40px; transition: transform 350ms ease-out; transform: translate3d(calc(var(--px) * -14px), calc(var(--py) * -7px), 0); }
-.monk-btn { appearance: none; display: block; padding: 0; border: 0; background: none; cursor: pointer; }
-.monk { display: block; width: 195px; height: auto; image-rendering: pixelated; animation: hover 3.2s ease-in-out infinite; }
+/* Logo stack: 46x53 art drawn at --art per pixel. It hovers; on each low point
+   the slabs squash, upper ones dropping further (--drop art pixels, lid = 4). */
+.stack-spot { position: relative; margin-right: 40px; transition: transform 350ms ease-out; transform: translate3d(calc(var(--px) * -14px), calc(var(--py) * -7px), 0); }
+.stack { --art: 4px; position: relative; width: calc(46 * var(--art)); aspect-ratio: 46 / 53; animation: hover 3.2s ease-in-out infinite; }
+.slab { position: absolute; inset: 0; width: 100%; height: 100%; image-rendering: pixelated; animation: squash 3.2s ease-in-out infinite; }
 @keyframes hover { 50% { translate: 0 -12px; } }
-.monk-says { position: absolute; z-index: 1; right: calc(100% + 10px); top: -6px; width: 210px; margin: 0; padding: 10px 12px; background: var(--white); color: var(--ink); font: 500 15px/1.35 var(--font-body); box-shadow: 4px 4px 0 rgba(8, 22, 40, .35); }
-.monk-says::after { content: ""; position: absolute; right: -16px; top: 16px; border: 8px solid transparent; border-left-color: var(--white); }
+@keyframes squash { 0%, 100% { translate: 0 calc(var(--drop) * var(--art)); } 20%, 80% { translate: 0 0; } }
 
 /* ------------------------------------------------------------------
    Catalogue
@@ -146,7 +147,7 @@ html[data-sky="night"] .far-isle { opacity: .18; }
 .feature-body { display: flex; flex-direction: column; gap: 16px; min-width: 0; padding: 32px; }
 .feature-body p { margin: 0; color: var(--ink-soft); }
 .slot-id { display: flex; align-items: center; gap: 12px; }
-.feature-title { margin: 0; font: 400 30px/1.1 var(--font-pixel); }
+.feature-title { margin: 0; font: 800 30px/1.1 var(--font-body); letter-spacing: -.01em; }
 
 /* Receipt lines: label, dotted leader, value. */
 .lines { display: flex; flex-direction: column; gap: 6px; font: 400 15px/1.45 var(--font-mono); }
@@ -178,20 +179,16 @@ html[data-sky="night"] .far-isle { opacity: .18; }
 .log-body .btn { align-self: flex-start; margin-top: auto; }
 
 /* ------------------------------------------------------------------
-   Standards: the studio's "certified" line, made literal.
+   Standards: about copy beside the studio's promises.
    ------------------------------------------------------------------ */
 .standards { background: var(--mist); }
 .standards-in { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); align-items: center; gap: 48px; padding-block: 64px; }
 .standards h2 { margin: 0 0 12px; font: 800 clamp(30px, 3.4vw, 40px)/1.05 var(--font-body); letter-spacing: -.02em; }
 .standards p { margin: 0; max-width: 44ch; color: var(--ink-soft); }
-.stamps { display: flex; flex-wrap: wrap; justify-content: center; gap: 28px; }
-.stamp { width: 156px; aspect-ratio: 1; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; text-align: center; border: 4px solid currentColor; border-radius: 50%; box-shadow: inset 0 0 0 6px var(--mist), inset 0 0 0 8px currentColor; transition: transform 200ms ease; }
-.stamp .mono { font-size: 11px; letter-spacing: .16em; }
-.stamp-name { font: 400 18px/1.05 var(--font-pixel); }
-.stamp-organic { color: #3D6A1E; transform: rotate(-7deg); }
-.stamp-fair { color: var(--link); transform: rotate(4deg); }
-.stamp-home { color: #7A4E26; transform: rotate(-2deg); }
-.stamp:hover { transform: rotate(0deg) scale(1.04); }
+.promises { display: grid; gap: 24px; margin: 0; padding: 0; list-style: none; }
+.promise { padding-left: 20px; border-left: 4px solid var(--link); }
+.promise-name { margin: 0 0 4px; font: 700 18px/1.2 var(--font-body); color: var(--ink); }
+.standards .promise p { max-width: 52ch; }
 
 /* ------------------------------------------------------------------
    Footer
@@ -208,7 +205,7 @@ html[data-sky="night"] .far-isle { opacity: .18; }
    Phone
    ------------------------------------------------------------------ */
 @media (max-width: 760px) {
-    :root { --gutter: 18px; }
+    :root { --gutter: 18px; --city-art: 3px; }
 
     .home .wordmark { font-size: 18px; }
     .home .nav-link { display: none; }
@@ -216,13 +213,10 @@ html[data-sky="night"] .far-isle { opacity: .18; }
     .wide-only { display: none; }
     .narrow-only { display: inline; }
 
-    .hero-body { grid-template-columns: minmax(0, 1fr); gap: 20px; padding-block: 8px 120px; }
-    .monk-spot { order: -1; justify-self: start; margin: 0; }
-    .monk { width: 117px; }
-    .monk-says { right: auto; left: calc(100% + 12px); top: 10px; width: min(190px, 50vw); }
-    .monk-says::after { right: auto; left: -16px; border-left-color: transparent; border-right-color: var(--white); }
+    .hero-body { grid-template-columns: minmax(0, 1fr); gap: 20px; padding-block: 8px 249px; }
+    .stack-spot { order: -1; justify-self: start; margin: 0; }
+    .stack { --art: 3px; }
     .pitch-lede { font-size: 19px; }
-    .far-isle { display: none; }
 
     .catalogue { padding-block: 40px 56px; }
     .feature { grid-template-columns: minmax(0, 1fr); }
@@ -235,16 +229,12 @@ html[data-sky="night"] .far-isle { opacity: .18; }
     .log-body { padding: 20px; }
 
     .standards-in { grid-template-columns: minmax(0, 1fr); gap: 28px; padding-block: 48px; }
-    .stamps { flex-wrap: nowrap; justify-content: flex-start; gap: 10px; }
-    .stamp { flex: none; width: 96px; gap: 3px; border-width: 3px; box-shadow: inset 0 0 0 4px var(--mist), inset 0 0 0 6px currentColor; }
-    .stamp-name { font-size: 13px; }
-    .stamp .mono { font-size: 10px; letter-spacing: .1em; }
 
     .contacts { grid-template-columns: minmax(0, 1fr); }
 }
 
 @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
-    .band, .monk { animation: none; }
-    .band, .hero-stars, .far-isle, .monk-spot, .stamp { transition: none; }
+    .stack, .slab { animation: none; }
+    .band, .hero-stars, .stack-spot { transition: none; }
 }

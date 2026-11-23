@@ -1,3 +1,3 @@
 User-agent: *
 Disallow: /cgi-bin/
-Sitemap: http://aquinasgames.ca/sitemap.xml
+Sitemap: https://subgrade.games/sitemap.xml

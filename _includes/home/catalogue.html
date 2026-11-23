@@ -3,8 +3,8 @@
 <!-- Catalogue: one feature card per game, then the empty slot that signs people up -->
 <section class="wrap catalogue" id="games" aria-labelledby="games-title">
     <div class="section-head">
-        <h2 id="games-title">Catalogue</h2>
-        <span class="mono muted">{% if home.games.size == 1 %}One game so far{% else %}{{ home.games.size }} games{% endif %} · each has its own site</span>
+        <h2 id="games-title">{{ home.catalogue.title }}</h2>
+        <span class="mono muted">{{ home.catalogue.note }}</span>
     </div>
 
     {% for game in home.games %}
@@ -15,8 +15,9 @@
             <video class="feature-video" id="clip-{{ slug }}" src="{{ clip.video | relative_url }}" poster="{{ clip.poster | relative_url }}" aria-label="{{ clip.alt }}" autoplay muted loop playsinline preload="metadata"></video>
 
             {% if game.clips.size > 1 %}
-            <p class="clip-caption mono" id="caption-{{ slug }}" aria-live="polite">Clip 1 of {{ game.clips.size }} · {{ clip.name }}</p>
-            <div class="clip-thumbs" data-player="clip-{{ slug }}" data-caption="caption-{{ slug }}">
+            {% assign caption = home.catalogue.clip_caption | replace: "{index}", "1" | replace: "{count}", game.clips.size | replace: "{name}", clip.name %}
+            <p class="clip-caption mono" id="caption-{{ slug }}" aria-live="polite">{{ caption }}</p>
+            <div class="clip-thumbs" data-player="clip-{{ slug }}" data-caption="caption-{{ slug }}" data-template="{{ home.catalogue.clip_caption }}">
                 {% for c in game.clips %}
                 <button class="clip-thumb" type="button" aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}" aria-label="Clip {{ forloop.index }}: {{ c.name }}" data-video="{{ c.video | relative_url }}" data-poster="{{ c.poster | relative_url }}" data-name="{{ c.name }}" data-alt="{{ c.alt }}">
                     <img src="{{ c.thumb | relative_url }}" alt="" width="240" height="135" loading="lazy">
@@ -35,12 +36,12 @@
                 {% for fact in game.facts %}
                 <div class="line"><span>{{ fact.label }}</span><span class="lead"></span><span class="val">{{ fact.value }}</span></div>
                 {% endfor %}
-                <div class="line total"><span>Total</span><span class="lead"></span><span class="val">{{ game.total }}</span></div>
+                <div class="line total"><span>{{ home.catalogue.total_label }}</span><span class="lead"></span><span class="val">{{ game.total }}</span></div>
             </div>
 
             <div class="btns">
-                <a class="btn" href="{{ game.store }}">Buy on Steam</a>
-                <a class="btn btn-ghost" href="{{ game.site | relative_url }}">Visit the game's site</a>
+                <a class="btn" href="{{ game.store }}">{{ game.store_label }}</a>
+                <a class="btn btn-ghost" href="{{ game.site | relative_url }}">{{ game.site_label }}</a>
             </div>
         </div>
     </article>
@@ -53,9 +54,9 @@
             <p>{{ home.next_slot.text }}</p>
         </div>
         <div class="field">
-            <label class="sr-only" for="signup-email">Email address</label>
-            <input id="signup-email" type="email" name="EMAIL" placeholder="you@example.com" autocomplete="email" required>
-            <button class="btn" type="submit">Notify me</button>
+            <label class="sr-only" for="signup-email">{{ home.next_slot.email_label }}</label>
+            <input id="signup-email" type="email" name="EMAIL" placeholder="{{ home.next_slot.email_placeholder }}" autocomplete="email" required>
+            <button class="btn" type="submit">{{ home.next_slot.button }}</button>
         </div>
         <!-- Mailchimp honeypot: real people never fill this in -->
         <div class="honeypot" aria-hidden="true"><input type="text" name="{{ home.mailing_list.honeypot }}" tabindex="-1" value=""></div>

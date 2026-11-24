@@ -20,6 +20,16 @@ catalogue:
   clip_caption: "Clip {index} of {count} · {name}"
 
 games:
+  # Unannounced game: no clips, store or site yet, so the card shows a
+  # placeholder panel and no buttons.
+  - code: GAME2
+    name: Untitled Project
+    status: In development
+    pitch: "We're working on something top-secret!"
+    theme: secret
+    # Shown on the placeholder panel in place of a video.
+    media_label: Classified
+
   - code: GAME1
     name: Twinstick Arcade
     status: Available on Steam

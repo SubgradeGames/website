@@ -14,7 +14,12 @@
     {% assign clip = game.clips | first %}
     <article class="feature feature-{{ game.theme }}">
         <div class="feature-media">
+            <!-- Unannounced games have no clips: show a placeholder panel instead -->
+            {% unless clip %}
+            <div class="feature-placeholder" aria-hidden="true"><span class="mono">{{ game.media_label }}</span></div>
+            {% else %}
             <video class="feature-video" id="clip-{{ slug }}" src="{{ clip.video | relative_url }}" poster="{{ clip.poster | relative_url }}" aria-label="{{ clip.alt }}" autoplay muted loop playsinline preload="metadata"></video>
+            {% endunless %}
 
             {% if game.clips.size > 1 %}
             {% assign caption = home.catalogue.clip_caption | replace: "{index}", "1" | replace: "{count}", game.clips.size | replace: "{name}", clip.name %}
@@ -35,10 +40,12 @@
             <p>{{ game.pitch }}</p>
 
             <!-- Store and site links split the card width; the site link wears the game's theme -->
+            {% if game.store %}
             <div class="btns-split">
                 <a class="btn btn-steam" href="{{ game.store }}">{% include home/steam-icon.svg %}{{ game.store_label }}</a>
                 <a class="btn btn-{{ game.theme }}" href="{{ game.site | relative_url }}">{{ game.site_label }}</a>
             </div>
+            {% endif %}
         </div>
     </article>
     {% endfor %}

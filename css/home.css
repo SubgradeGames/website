@@ -117,7 +117,10 @@ html[data-sky="night"] .street { background-image: url('../assets/home/street-ni
 html[data-sky="dusk"] .hero-stars { opacity: .35; }
 html[data-sky="night"] .hero-stars { opacity: 1; }
 
-.nav { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 22px; }
+.nav { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 16px; --nav-pad: 22px; padding-block: var(--nav-pad); }
+/* White rule under the navbar. It overhangs the content by --nav-pad each
+   side, matching the gap between the links and the rule. */
+.nav::after { content: ''; position: absolute; left: calc(var(--gutter) - var(--nav-pad)); right: calc(var(--gutter) - var(--nav-pad)); bottom: 0; height: 2px; background: var(--white); pointer-events: none; }
 .home .wordmark { display: inline-flex; align-items: center; font: 600 26px/1 var(--font-body); color: var(--white); text-decoration: none; white-space: nowrap; }
 .nav-links { display: flex; align-items: center; gap: 4px; }
 .home .nav-link { display: inline-flex; align-items: center; min-height: 44px; padding: 0 12px; color: var(--white); font-weight: 500; text-decoration: none; }
@@ -134,7 +137,7 @@ html[data-sky="night"] .hero-stars { opacity: 1; }
 .nav-toggle[aria-expanded="true"] .nav-bars::before { transform: rotate(45deg); }
 .nav-toggle[aria-expanded="true"] .nav-bars::after { transform: rotate(-45deg); }
 
-.hero-body { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 40px; padding-block: 36px 332px; }
+.hero-body { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 40px; margin-top: 30px; padding-block: 36px 332px; }
 .pitch-title { margin: 0 0 18px; max-width: 14ch; font: 800 clamp(38px, 5.4vw, 66px)/1.04 var(--font-body); letter-spacing: -.02em; text-wrap: balance; }
 .pitch-lede { margin: 0; max-width: 36ch; font-size: 22px; line-height: 1.4; font-weight: 500; }
 
@@ -149,7 +152,7 @@ html[data-sky="night"] .hero-stars { opacity: 1; }
 /* ------------------------------------------------------------------
    Catalogue
    ------------------------------------------------------------------ */
-.catalogue { display: flex; flex-direction: column; gap: 20px; padding-block: 64px 80px; }
+.catalogue { --flow: 20px; display: flex; flex-direction: column; gap: var(--flow); padding-block: 64px 80px; }
 .section-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 24px; margin-bottom: 8px; }
 .section-head h2 { margin: 0; font: 800 clamp(32px, 3.6vw, 44px)/1.05 var(--font-body); letter-spacing: -.02em; }
 .section-sub { margin: 8px 0 0; max-width: 60ch; color: var(--ink-soft); }
@@ -164,7 +167,11 @@ html[data-sky="night"] .hero-stars { opacity: 1; }
 .clip-thumb:hover { opacity: 1; }
 .clip-thumb[aria-pressed="true"] { opacity: 1; box-shadow: 0 0 0 2px var(--sand); }
 
-/* Twinstick card: blueprint border. The edge lines overshoot every corner
+/* Unannounced game: hatched 16:9 panel with a stamped label in place of a video. */
+.feature-placeholder { display: grid; place-items: center; flex: 1 1 auto; aspect-ratio: 16 / 9; background: repeating-linear-gradient(-45deg, rgba(255, 255, 255, .05) 0 12px, transparent 12px 24px), var(--ink); }
+.feature-placeholder .mono { padding: 8px 16px; border: 2px solid var(--sand); color: var(--sand); font-size: 18px; letter-spacing: .3em; }
+
+/* Twinstick and unannounced cards: blueprint border. The edge lines overshoot every corner
    by --tick, like construction lines on an architect's drawing.
 
         |              |
@@ -181,8 +188,8 @@ html[data-sky="night"] .hero-stars { opacity: 1; }
    The tips fade out in 2 px pixel dither, one --dither band per step,
    counted inward from the tip: 25% fill, 50% checker, then solid.
    The mask layers clip to border/padding/content box to make the bands. */
-.feature-twinstick { --tick: 16px; --line: 4px; --dither: 4px; position: relative; border: var(--line) solid var(--blueprint); }
-.feature-twinstick::before {
+.feature-twinstick, .feature-secret { --tick: 16px; --line: 4px; --dither: 4px; position: relative; border: var(--line) solid var(--blueprint); }
+.feature-twinstick::before, .feature-secret::before {
     --ink-line: linear-gradient(var(--blueprint), var(--blueprint));
     --solid: linear-gradient(#000, #000);
     --checker: conic-gradient(#000 25%, transparent 0 50%, #000 0 75%, transparent 0);
@@ -207,6 +214,35 @@ html[data-sky="night"] .hero-stars { opacity: 1; }
     background-origin: border-box;
     mask: var(--solid) content-box, var(--checker) 0 0 / 4px 4px padding-box, var(--sparse) 0 0 / 4px 4px border-box;
     mask-origin: border-box;
+}
+
+/* Stacked cards sit --card-gap apart, border edge to border edge. */
+.feature + .feature { --card-gap: 48px; margin-top: calc(var(--card-gap) - var(--flow)); }
+
+/* Stacked framed cards: a solid line bridges each side edge across the gap,
+   joining the frames into one ruled column. Only the outer tips dither.
+
+        |  upper card  |
+     ---+--------------+---
+        |              |      <- bridge, drawn by the lower card
+     ---+--------------+---
+        |  lower card  |
+*/
+/* At fractional zoom, border widths snap to whole device pixels but offsets
+   like -4px don't, so the bridge is anchored to the card's inner edge (where
+   its border starts too) and drawn outward as an outline. The clip keeps the
+   outline's sides and drops its top and bottom. It also runs one --line into
+   each card's border, so rounding can't leave a hairline seam at the joints. */
+:is(.feature-twinstick, .feature-secret) + :is(.feature-twinstick, .feature-secret)::after {
+    content: "";
+    position: absolute;
+    top: calc(-1 * (2 * var(--line) + var(--card-gap)));
+    left: 0;
+    right: 0;
+    height: calc(var(--card-gap) + 2 * var(--line));
+    outline: var(--line) solid var(--blueprint);
+    clip-path: inset(0 calc(-2 * var(--line)));
+    pointer-events: none;
 }
 
 .feature-body { display: flex; flex-direction: column; gap: 16px; min-width: 0; padding: 32px; }
@@ -296,6 +332,8 @@ html[data-sky="night"] .hero-stars { opacity: 1; }
     /* Links fold into a dropdown under the toggle, right-aligned. Without JS
        the toggle stays hidden and so do the links. */
     .nav { z-index: 1; }
+    /* Phone: the gutter is too narrow to overhang, so the rule lines up with the content. */
+    .nav::after { left: var(--gutter); right: var(--gutter); }
     .nav-toggle:not([hidden]) { display: inline-flex; margin-right: -12px; }
     .nav-links { display: flex; position: absolute; top: 100%; right: var(--gutter); flex-direction: column; align-items: stretch; gap: 0; min-width: 180px; padding: 8px 0; background: var(--ink); }
     .home .nav-link { padding: 0 20px; }
@@ -312,7 +350,7 @@ html[data-sky="night"] .hero-stars { opacity: 1; }
     .home .nav-toggle[aria-expanded="true"] + .nav-links .nav-link:nth-child(3) { transition-delay: 140ms; }
 
     /* Logo and pitch centred; the logo clears the nav. */
-    .hero-body { grid-template-columns: minmax(0, 1fr); gap: 20px; padding-block: 32px 249px; text-align: center; }
+    .hero-body { grid-template-columns: minmax(0, 1fr); gap: 20px; margin-top: 0; padding-block: 32px 249px; text-align: center; }
     .stack-spot { order: -1; justify-self: center; margin: 0; }
     .stack { --art: 3px; }
     .pitch-title, .pitch-lede { margin-inline: auto; }
@@ -323,7 +361,7 @@ html[data-sky="night"] .hero-stars { opacity: 1; }
     .feature-body { padding: 20px; }
 
     /* Ticks shrink to fit the gutter (12 + 4 line < 18), so no tip is clipped. */
-    .feature-twinstick { --tick: 12px; }
+    .feature-twinstick, .feature-secret { --tick: 12px; }
 
     /* Store and site buttons stack: halves are too narrow for icon and label. */
     .btns-split { grid-template-columns: minmax(0, 1fr); }

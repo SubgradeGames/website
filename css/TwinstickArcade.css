@@ -232,4 +232,9 @@ ul {
     #steam-link {
         font-size: 1em;
     }
+
+    /* Post header: keep "Buy On Steam" and the date from touching. */
+    #return-bar {
+        gap: 1em;
+    }
 }

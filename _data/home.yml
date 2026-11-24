@@ -11,10 +11,11 @@ nav:
   games: Games
   devlog: Devlogs
   contact: Contact
+  menu: Menu
 
 catalogue:
   title: Our Games Catalogue
-  subtitle: "A list of every game Subgrade has released on Steam or elsewhere."
+  subtitle: "A list of every game Subgrade has released"
   # {index}, {count} and {name} are filled in per clip. Example: "Clip 2 of 4 · Getting started".
   clip_caption: "Clip {index} of {count} · {name}"
 
@@ -69,7 +70,7 @@ mailing_list:
 
 devlog:
   title: From the workshop
-  subtitle: A peek at the design and development work behind our games.
+  subtitle: A peek at the game development process.
   filter_label: Filter devlogs by game or tag
   all_label: All
   empty: No devlogs match this filter yet.

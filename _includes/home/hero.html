@@ -14,7 +14,11 @@
         <a class="wordmark" href="{{ '/' | relative_url }}">
             {{ home.studio }}
         </a>
-        <div class="nav-links">
+        <!-- Phone menu toggle: js/home.js reveals it; aria-expanded opens the links below -->
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="{{ home.nav.menu }}" hidden>
+            <span class="nav-bars" aria-hidden="true"></span>
+        </button>
+        <div class="nav-links" id="nav-links">
             <a class="nav-link" href="#games">{{ home.nav.games }}</a>
             <a class="nav-link" href="#devlog">{{ home.nav.devlog }}</a>
             <a class="nav-link" href="#contact">{{ home.nav.contact }}</a>

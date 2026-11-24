@@ -9,9 +9,49 @@
     const TAG_KEY = 'tag';
     const PAGE_KEY = 'page';
 
+    initMenu();
     initTilt();
     initClips();
     initDevlog();
+
+    // Phone menu: the toggle flips aria-expanded; CSS shows the links when true.
+    // Picking a link, Escape, or a tap outside closes it.
+    function initMenu() {
+        const toggle = document.querySelector('.nav-toggle');
+        const links = document.getElementById('nav-links');
+        if (!toggle || !links) {
+            return;
+        }
+
+        const setOpen = (open) => toggle.setAttribute('aria-expanded', String(open));
+        const isOpen = () => toggle.getAttribute('aria-expanded') === 'true';
+
+        toggle.addEventListener('click', () => setOpen(!isOpen()));
+        links.addEventListener('click', (event) => {
+            if (event.target.closest('a')) {
+                setOpen(false);
+            }
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key !== 'Escape' || !isOpen()) {
+                return;
+            }
+
+            setOpen(false);
+            toggle.focus();
+        });
+
+        document.addEventListener('click', (event) => {
+            if (toggle.contains(event.target) || links.contains(event.target)) {
+                return;
+            }
+
+            setOpen(false);
+        });
+
+        toggle.hidden = false;
+    }
 
     // Parallax: pointer position becomes --px/--py (-1..1); CSS scales it per layer.
     // Mouse only, one style write per frame.
